@@ -40,11 +40,9 @@ function M.setup(config)
     end, M.config.ms)
 
     vim.api.nvim_create_autocmd(M.config.autocmd, {
-        callback = vim.schedule_wrap(function()
-            local buf = vim.api.nvim_get_current_buf()
-
-            disable_diagnostics(buf)
-            debounced_enable_diagnostics(buf)
+        callback = vim.schedule_wrap(function(ev)
+            disable_diagnostics(ev.buf)
+            debounced_enable_diagnostics(ev.buf)
         end),
     })
 
