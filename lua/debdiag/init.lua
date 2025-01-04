@@ -50,10 +50,9 @@ function M.setup(config)
 
     if M.config.enable_leave_insert then
         vim.api.nvim_create_autocmd("InsertLeave", {
-            callback = function()
-                local buf = vim.api.nvim_get_current_buf()
-                enable_diagnostics(buf)
-            end,
+            callback = vim.schedule_wrap(function(ev)
+                enable_diagnostics(ev.buf)
+            end),
         })
     end
 end
