@@ -36,21 +36,23 @@ function M.setup(config)
     local debounced_enable_diagnostics = utils.debounce(function(buf)
         if vim.api.nvim_buf_is_valid(buf) then
             enable_diagnostics(buf)
+        else
+            disabled_map[buf] = nil
         end
     end, M.config.ms)
 
     vim.api.nvim_create_autocmd(M.config.autocmd, {
-        callback = vim.schedule_wrap(function(ev)
+        callback = function(ev)
             disable_diagnostics(ev.buf)
             debounced_enable_diagnostics(ev.buf)
-        end),
+        end,
     })
 
     if M.config.enable_leave_insert then
         vim.api.nvim_create_autocmd("InsertLeave", {
-            callback = vim.schedule_wrap(function(ev)
+            callback = function(ev)
                 enable_diagnostics(ev.buf)
-            end),
+            end,
         })
     end
 end
